@@ -4,14 +4,14 @@ const Category = require('../../db/models/category.js');
 const postProduct = async (req, res)=>{
     try {
         const data = req.body;
-        const newProject = await Product.create(data);
+        const newProduct = await Product.create(data);
         //Verifico si existe la categoría, si no la creo.
-        const category = await Category.findOne({where:{ name: data.category}}) 
-        if(category){
-            await newProject.addCategory(data.category);
+        const category_exist = await Category.findOne({where:{ name: data.category}}) 
+        if(category_exist){
+            await newProduct.setCategory(category_exist.id);
         }else{
-            await Category.create({name: data.category});
-            await newProject.addCategory(data.category);
+            const new_category = await Category.create({name: data.category});
+            await newProduct.setCategory(new_category.id);
         }
         res.send("Producto agregado con éxito");
     } catch (error) {

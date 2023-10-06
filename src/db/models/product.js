@@ -27,11 +27,7 @@ const Product = sequelize.define("product",{
     }
 });
 
-Product.belongsTo(Category, {
-    foreignKey: 'categoryId'
-})
-Category.hasMany(Product, {
-    foreignKey: 'categoryId'
-})
+Product.belongsTo(Category, { foreignKey: 'categoryId' });
+Category.hasMany(Product);
 
 module.exports = Product;
