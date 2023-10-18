@@ -14,7 +14,7 @@ const Product = sequelize.define("product",{
         allowNull: false
     },
     image:{
-        type: DataTypes.STRING
+        type: DataTypes.JSON
     },
     price:{
         type: DataTypes.DECIMAL(10, 2) // Establece un total de 10 digitos, con 2 digitos despues de la coma
