@@ -28,6 +28,8 @@ const fileFilter = (req, file, cb)=>{
     cb("Error el archivo debe ser en formato (jpeg, jpg, png ó svg"); //En caso que no se cumplan las condiciones, retorno un error.
 }
 //Middlewares:
+app.use(cors(corsOptions));
+
 app.use(multer({
     storage: storage,
     dest: path.join(__dirname, 'public/uploads'),
@@ -35,7 +37,6 @@ app.use(multer({
     fileFilter: fileFilter
 }).single('image'));
 
-app.use(cors(corsOptions));
 
 app.use(express.json());
 

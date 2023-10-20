@@ -5,7 +5,9 @@ const { uploadImage } = require('../../utils/cloudinary.js');
 
 const postProduct = async (req, res)=>{
     try {
-        const data = JSON.parse(req.body.data);
+        // const data = JSON.parse(req.body.data);
+        console.log(req)
+        console.log(req.file)
         if(req.file){
             const result = await uploadImage(req.file.path); // Subo la imágen a cloudinary.
             await fs.unlink(req.file.path); //Elimino la imágen que guardo multer en "public".
