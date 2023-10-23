@@ -35,7 +35,7 @@ app.use(multer({
     dest: path.join(__dirname, 'public/uploads'),
     limits: { fileSize: 5000000},
     fileFilter: fileFilter
-}).single('image'));
+}).array('image', 6));
 
 
 app.use(express.json());

@@ -5,14 +5,24 @@ const { uploadImage } = require('../../utils/cloudinary.js');
 
 const postProduct = async (req, res)=>{
     try {
-        // const data = JSON.parse(req.body.data);
-        console.log(req)
-        console.log(req.file)
-        if(req.file){
-            const result = await uploadImage(req.file.path); // Subo la imágen a cloudinary.
-            await fs.unlink(req.file.path); //Elimino la imágen que guardo multer en "public".
-            data.image = {url: result.url, public_id: result.public_id}; 
-        }
+        const data = JSON.parse(req.body.data);
+        const loadImage = async ()=>{
+                let cont=0;
+                await Promise.all(req.files.map(async (file)=>{
+                    const result = await uploadImage(file.path); // Subo la imágen a cloudinary.
+                    await fs.unlink(file.path); //Elimino la imágen que guardo multer en "public".
+                    data.image ?
+                        data.image = {
+                            ...data.image,
+                            [cont] : {url: result.url, public_id: result.public_id}
+                        } :
+                        data.image = {
+                            0 : {url: result.url, public_id: result.public_id}
+                        }
+                    cont++
+                }));
+        }   
+        await loadImage();
         const newProduct = await Product.create(data);
         //Verifico si existe la categoría, si no la creo.
         const category_exist = await Category.findOne({where:{ name: data.category}}) 
