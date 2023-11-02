@@ -1,15 +1,15 @@
-const {validationQuerysFiltersPrice, validationQueryOrders, querySplit} = require('./functions/functionsGetProducts.js');
+const {validationQuerysFiltersPrice, validationQueryName, validationQueryOrders, querySplit, whereFilters} = require('./functions/functionsGetProducts.js');
 const Product = require('../../db/models/product.js');
 const Category = require('../../db/models/category.js');
-const { Op, where } = require('sequelize');
-const { query } = require('express');
+const { Op } = require('sequelize');
 const getProducts = async (req, res)=>{
-    let { filter_preciomin, filter_precioMax, order } = req.query;
+    let { filter_preciomin, filter_precioMax, order, name } = req.query;
     filter_preciomin= parseInt(filter_preciomin, 10);
     filter_precioMax= parseInt(filter_precioMax, 10);
     //Validar querys (Que sea alguno de los parametros esperados, si no retorno un error).
     const validationFiltersPrice = validationQuerysFiltersPrice(filter_preciomin, filter_precioMax);
     const validationOrders = validationQueryOrders(order);
+    const validationName = validationQueryName(name);
     //En el caso de existir y ser correcto la query de "order", entonces desestructuro la query.
     if(validationOrders){
         const querySplits = querySplit(order);
@@ -25,14 +25,17 @@ const getProducts = async (req, res)=>{
         products: {}, // Productos 
         pages: 0, // Cantidad de páginas mostrando 10 productos en cada página.
     }
+    
     try {
         respons.products = await Product.findAll({
-            where: validationFiltersPrice ? {
-                price:  {      
-                    [Op.gte] : filter_preciomin,
-                    [Op.lte] : filter_precioMax
-                } 
-            } : {},
+            where: whereFilters(
+                Op,
+                validationFiltersPrice,
+                validationName,
+                filter_preciomin,
+                filter_precioMax,
+                name
+            ),
             order: validationOrders ? [
                 [orderName, orderDirect]
             ] : [],

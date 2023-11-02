@@ -23,8 +23,46 @@ const querySplit = (order)=>{
     }
 }
 
+const validationQueryName = (name)=>{
+    let validation = false;
+    if(name && name.length < 70){
+        validation = true
+    }
+    return validation;
+}
+
+const whereFilters = (Op,validationFiltersPrice, validationName, filter_preciomin, filter_precioMax, name)=>{
+    const filters = [];
+
+    if(validationFiltersPrice){
+        filters.push({
+                price: {      
+                    [Op.gte] : filter_preciomin,
+                    [Op.lte] : filter_precioMax
+                }
+            })
+    };
+    if(validationName){
+        filters.push({
+            name: {
+                [Op.substring] : name
+            }
+        })
+    };
+    if(filters.length === 0){ 
+        return null;
+    }else if(filters.length == 1){
+        return filters[0];
+    }else if(filters.length == 2){
+        return{
+            [Op.and]: filters
+        }
+    }
+}
 module.exports = {
     validationQuerysFiltersPrice,
     validationQueryOrders,
-    querySplit
+    querySplit,
+    validationQueryName,
+    whereFilters
 }
