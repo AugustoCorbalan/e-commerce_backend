@@ -1,9 +1,11 @@
 const mercadopago = require('mercadopago');
+const {config} = require('dotenv');
+config();
 const createOrder = async(req,res)=>{
     try {
        //Agrego credenciales
        mercadopago.configure({
-       access_token: 'TEST-7361752998185703-110316-79268be81f0e78946180a19709bacfd9-1535520144' //Token de Cuenta de prueba (Vendedor)
+       access_token: process.env.MP_ACCESSTOKEN //Token de Cuenta de prueba (Vendedor)
        })
    
       //Ahora configuro las características del producto (prferencias)
@@ -17,10 +19,11 @@ const createOrder = async(req,res)=>{
                 }
             ],
             back_urls:{
-                success: "http://localhost:3002/payment_success",
-                failure: "http://localhost:3002/payment_failure",
-                pending: "http://localhost:3002/payment_pending"
-            }
+                success: process.env.MP_SUCCESS_URL,
+                failure: process.env.MP_FAILURE_URL,
+                pending: process.env.MP_PENDING_URL
+            },
+            notification_url: process.env.MP_NOTIFICATION_URL
        })
        res.send(result);
    } catch (error) {
@@ -29,6 +32,4 @@ const createOrder = async(req,res)=>{
    }
 
 }
-module.exports = {
-    createOrder
-}
+module.exports = createOrder;
