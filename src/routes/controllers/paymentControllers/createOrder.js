@@ -12,6 +12,7 @@ const createOrder = async(req,res)=>{
        const result = await mercadopago.preferences.create({
             items:[
                 {
+                    id:"heladera_001",
                     title: "Heladera",
                     unit_price: 50000,
                     currency_id: "ARS",
