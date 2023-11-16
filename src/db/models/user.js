@@ -24,6 +24,10 @@ const User = sequelize.define("user",{
     password:{
         type: DataTypes.STRING,
         allowNull: false
+    },
+    cart:{
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        allowNull: true
     }
 });
 
