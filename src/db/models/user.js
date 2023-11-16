@@ -1,12 +1,13 @@
 const sequelize = require('../db.js');
 const { DataTypes } = require('sequelize');
-const Product = require('./product.js');
 const { v4: uuidv4 } = require('uuid');
+
+const Cart = require("./cart.js");
 
 const User = sequelize.define("user",{
     id:{
         type: DataTypes.UUID,
-        defaultValue: () => uuidv4,
+        defaultValue: () => uuidv4(),
         primaryKey: true,
     },
     name:{
@@ -24,18 +25,11 @@ const User = sequelize.define("user",{
     password:{
         type: DataTypes.STRING,
         allowNull: false
-    },
-    cart:{
-        type: DataTypes.ARRAY(DataTypes.JSON),
-        allowNull: true
     }
 });
 
-User.belongsToMany(Product, {
-    throw: "user_product"
-});
-Product.belongsToMany(User, {
-    throw: "user_product"
-});
+//Establezco una relación con Cart de uno a uno.
+User.hasOne(Cart);
+Cart.belongsTo(User);
 
 module.exports = User;
