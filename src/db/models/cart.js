@@ -1,9 +1,10 @@
+const User = require('./user.js');
 const sequelize = require('../db.js');
 const { DataTypes } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 
 const Cart = sequelize.define( "cart", {
-    id:{
+    cartId:{
         type: DataTypes.UUID,
         defaultValue: ()=> uuidv4(),
         primaryKey: true
@@ -17,5 +18,7 @@ const Cart = sequelize.define( "cart", {
         allowNull: true
     }
 })
+
+Cart.belongsTo(User, { foreignKey: 'userId', allowNull: false});
 
 module.exports = Cart;
