@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const Category = require('./category.js');
 
 const Product = sequelize.define("product",{
-    id:{
+    productId:{
         type: DataTypes.UUID,
         defaultValue: () => uuidv4(),
         primaryKey: true,
@@ -22,7 +22,7 @@ const Product = sequelize.define("product",{
     description:{
         type: DataTypes.STRING(1500)
     },
-    cuantity: {
+    quantity: {
         type: DataTypes.INTEGER
     }
 });

@@ -6,9 +6,8 @@ const getUser = async (req, res)=>{
         const  {id} = req.params;
         const data = await User.findOne({
             where:{
-                id: id
-            },
-            include: Cart
+                userId: id
+            }
         })
         res.status(200).send(data);
     } catch (error) {
