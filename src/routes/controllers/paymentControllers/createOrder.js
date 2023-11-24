@@ -20,20 +20,20 @@ const createOrder = async(req,res)=>{
         // Busco los productos en la base de datos
         const productsDB = await Product.findAll({
             where:{
-                id: {
+                productId: {
                     [Op.or] : productsIDs
                 }
             }
         });
     
         const items = productsDB.length? productsDB.map((el)=>{
-            const {id, name, price} = el.dataValues;
+            const {productId, name, price} = el.dataValues;
             return {
-                id: id,
+                id: productId,
                 title: name,
                 unit_price: Number.parseFloat(price),
                 currency_id: "ARS",
-                quantity: ID_quantity[id] 
+                quantity: ID_quantity[productId] 
             }
         }) : [];
         const result = await mercadopago.preferences.create({
