@@ -12,11 +12,12 @@ const createOrder = async(req,res)=>{
    
         // Ahora configuro las características del producto (prferencias)
         const  productsQuery = req.body.products; // Recibo un arreglo con todos los productos a comprar y la cantidad de cada uno.
+        console.log(productsQuery)
         // Creo un array con los IDs para luego pasarlo como condición en la consulta.
-        const productsIDs = productsQuery.map((product)=> product.id);
+        const productsIDs = productsQuery.map((product)=> product.productId);
         // Creo un "diccionario" que relaciona ID con cantidad 
         let ID_quantity = {}; 
-        productsQuery.map((product)=> ID_quantity[product.id] = product.quantity);
+        productsQuery.map((product)=> ID_quantity[product.productId] = product.quantity);
         // Busco los productos en la base de datos
         const productsDB = await Product.findAll({
             where:{
