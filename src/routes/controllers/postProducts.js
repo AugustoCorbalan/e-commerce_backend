@@ -35,7 +35,7 @@ const postProduct = async (req, res)=>{
         res.send("Producto agregado con éxito");
     } catch (error) {
         console.error(error);
-        res.send(error.message);
+        res.status(400).send(error.message);
     }
 }
 
