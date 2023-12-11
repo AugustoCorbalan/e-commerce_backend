@@ -14,7 +14,7 @@ const putCart_add = async (req, res)=>{
             //Entonces creo un nuevo carrito
             const newCart = await Cart.create({products: data});
             //Busco el usuario a quien pertenece el carrito.
-            const user = await User.findOne({ where:{ userId: id_user }})
+            const user = await User.findOne({ where:{ userId: id_user }});
             // Relaciono su respectivo usuario con el carrito creado
             await newCart.setUser(user);
         }else if (cart.dataValues.products.length >= 0){
