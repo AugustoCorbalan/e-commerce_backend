@@ -1,6 +1,6 @@
 const Cart = require('../../../db/models/cart');
 const User = require('../../../db/models/user');
-const putCart = async (req, res)=>{
+const putCart_add = async (req, res)=>{
     try {
         const { id_user } = req.params;
         const data = req.body;
@@ -24,7 +24,6 @@ const putCart = async (req, res)=>{
             let exist = false;
             let newProducts = [];
             newProducts = dataValues.products.map((product)=>{
-                console.log(product);
                 if(product.productId == data[0].productId){
                     //Entonces sumo la cantidad de unidades nuevas a las existentes.
                     exist = true;
@@ -42,4 +41,4 @@ const putCart = async (req, res)=>{
     }
 }
 
-module.exports = putCart;
+module.exports = putCart_add;

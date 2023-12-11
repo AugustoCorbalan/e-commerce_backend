@@ -10,7 +10,6 @@ const getCart = async (req, res)=>{
                 userId: id_user
             }
         })
-        console.log(cart)
         //Una vez que tenemos el carro de compras con el id de cada producto, busco los datos de este producto.
         if(cart){
             const response = await Promise.all(cart.products.map(async (product)=>{
