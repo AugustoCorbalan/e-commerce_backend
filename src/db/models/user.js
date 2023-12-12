@@ -3,9 +3,9 @@ const { DataTypes } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 
 const User = sequelize.define("user",{
+    //Como userId utilizo el id de usuario generado por la cuenta de google del usuario.
     userId:{
-        type: DataTypes.UUID,
-        defaultValue: () => uuidv4(),
+        type: DataTypes.STRING,
         primaryKey: true,
     },
     name:{

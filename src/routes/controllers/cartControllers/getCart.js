@@ -3,7 +3,6 @@ const Product = require('../../../db/models/product.js');
 
 const getCart = async (req, res)=>{
     const {id_user} = req.params;
-    console.log("id_user", id_user);
     try {
         const cart = await Cart.findOne({
             where:{
