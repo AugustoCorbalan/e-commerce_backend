@@ -7,8 +7,9 @@ const postAuth = async (req, res)=>{
         //Verifico la integridad del token recibido:
         const data = await verify_token_id(token_id).catch(console.error);
         //Busco los datos del usuario (En caso que no exista en la bd, creo el nuevo usuario):
-        let user = (await handleUser(data)).dataValues;
+        let user = (await handleUser(data));
         //Devuelvo como respuesta los datos del usuario.
+        console.log(user);
         res.status(200).send(user);
     } catch (error) {
         console.error(error);

@@ -12,12 +12,13 @@ const handleUser = async (data)=>{
             email: data.payload.email
         })
     }
-
+    user = user.dataValues;
     return {
         name: user.name,
         lastName: user.lastName,
         email: user.lastName,
-        userId: user.userId
+        userId: user.userId,
+        typeUser: user.typeUser
     };
 }
 
