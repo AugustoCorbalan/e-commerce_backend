@@ -12,7 +12,13 @@ const handleUser = async (data)=>{
             email: data.payload.email
         })
     }
-    return user;
+
+    return {
+        name: user.name,
+        lastName: user.lastName,
+        email: user.lastName,
+        userId: user.userId
+    };
 }
 
 module.exports = handleUser;
