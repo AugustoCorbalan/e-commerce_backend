@@ -45,7 +45,7 @@ const whereFilters = (Op,validationFiltersPrice, validationName, filter_preciomi
     if(validationName){
         filters.push({
             name: {
-                [Op.substring] : name
+                [Op.iLike] : `%${name}%`
             }
         })
     };
