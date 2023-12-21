@@ -31,6 +31,24 @@ const validationQueryName = (name)=>{
     return validation;
 }
 
+const validationQueryPage = (page)=>{
+    let validation = false;
+    if(page && Number.isInteger(page)){
+        validation = true; 
+    }
+    return validation;
+}
+
+const calcRange = (validation, page)=>{
+    let limitMin = 0;
+    let limitMax = 9;
+    if(validation, page){
+        limitMin = (page*10)-10
+        limitMax = limitMin+9 
+    }
+    return [limitMin, limitMax];
+}
+
 const whereFilters = (Op,validationFiltersPrice, validationName, filter_preciomin, filter_precioMax, name)=>{
     const filters = [];
 
@@ -64,5 +82,7 @@ module.exports = {
     validationQueryOrders,
     querySplit,
     validationQueryName,
-    whereFilters
+    validationQueryPage,
+    whereFilters,
+    calcRange
 }

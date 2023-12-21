@@ -1,15 +1,23 @@
-const {validationQuerysFiltersPrice, validationQueryName, validationQueryOrders, querySplit, whereFilters} = require('./functions/functionsGetProducts.js');
+const {validationQuerysFiltersPrice, validationQueryName,validationQueryPage, validationQueryOrders, querySplit, whereFilters, calcRange} = require('./functions/functionsGetProducts.js');
 const Product = require('../../db/models/product.js');
 const Category = require('../../db/models/category.js');
 const { Op } = require('sequelize');
 const getProducts = async (req, res)=>{
-    let { filter_preciomin, filter_precioMax, order, name } = req.query;
+    let { filter_preciomin, filter_precioMax, order, name, page } = req.query;
+    console.log("req.query", req.query);
     filter_preciomin= parseInt(filter_preciomin, 10);
     filter_precioMax= parseInt(filter_precioMax, 10);
     //Validar querys (Que sea alguno de los parametros esperados, si no retorno un error).
     const validationFiltersPrice = validationQuerysFiltersPrice(filter_preciomin, filter_precioMax);
     const validationOrders = validationQueryOrders(order);
     const validationName = validationQueryName(name);
+    const validationPage = validationQueryPage(Number.parseInt(page));
+    //Guardo constantes de paginación:
+    console.log("page", page);
+    const numberPage = validationPage? page : 1;
+    const sizePage = 10;
+    console.log("numberPage", numberPage)
+    const offset = (numberPage-1)*sizePage;
     //En el caso de existir y ser correcto la query de "order", entonces desestructuro la query.
     if(validationOrders){
         const querySplits = querySplit(order);
@@ -38,14 +46,25 @@ const getProducts = async (req, res)=>{
             ),
             order: validationOrders ? [
                 [orderName, orderDirect]
-            ] : [],
+            ] : [['productId', 'ASC']],
+            limit: sizePage,
+            offset: offset,
             include: Category
         });
         respons.price = {
             price_min: await Product.min('price'),
             price_max: await Product.max('price'),
         }
-        respons.pages = Math.ceil(respons.products.length/10);
+        const count = await Product.count({
+            where: whereFilters(
+                Op,
+                validationFiltersPrice,
+                validationName,
+                filter_preciomin,
+                filter_precioMax,
+                name
+        )});
+        respons.pages = Math.ceil(count/10);
         res.send( respons );
     } catch (error) {
         console.error(error);
