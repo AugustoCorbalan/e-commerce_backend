@@ -5,9 +5,11 @@ const path = require('path');
 const {v4: uuidv4} = require('uuid');
 const multer = require('multer');
 const app = express();
+require('dotenv').config();
+const { ALLOWED_URL_CORS } = process.env;
 
 const corsOptions={
-    origin: 'http://localhost:3000',
+    origin: ALLOWED_URL_CORS,
     methods: 'GET, PUT, DELETE, POST',
     credentials: true
 }
