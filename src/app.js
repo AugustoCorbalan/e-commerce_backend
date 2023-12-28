@@ -9,7 +9,7 @@ require('dotenv').config();
 const { ALLOWED_URL_CORS } = process.env;
 
 const corsOptions={
-    origin: 'https://e-commerce-frontend-zeta.vercel.app/',
+    origin: ALLOWED_URL_CORS,
     methods: 'GET, PUT, DELETE, POST',
     credentials: true
 }
