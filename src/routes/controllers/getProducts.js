@@ -13,7 +13,7 @@ const getProducts = async (req, res)=>{
     const validationPage = validationQueryPage(Number.parseInt(page));
     //Guardo constantes de paginación:
     const numberPage = validationPage? page : 1;
-    const sizePage = 10;
+    const sizePage = 9;
     const offset = (numberPage-1)*sizePage;
     //En el caso de existir y ser correcto la query de "order", entonces desestructuro la query.
     if(validationOrders){
