@@ -25,7 +25,7 @@ const querySplit = (order)=>{
 
 const validationQueryName = (name)=>{
     let validation = false;
-    if(name && name.length < 70){
+    if(name=="" && name.length < 70){
         validation = true
     }
     return validation;
