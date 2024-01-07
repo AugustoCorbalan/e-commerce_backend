@@ -92,7 +92,7 @@ const getProducts = async (req, res)=>{
             attributes:["price"],
             raw: true
         })
-        console.log("productsOrdered", productsOrdered)
+
         const price_min = productsOrdered[0].price? Number.parseFloat(productsOrdered[0].price) : 0;
         const price_max = productsOrdered[0].price? Number.parseFloat(productsOrdered[productsOrdered.length - 1].price) : 0;
         respons.price = {
@@ -103,12 +103,14 @@ const getProducts = async (req, res)=>{
             price_2thirds: Math.floor(price_min + 2*(price_max - price_min)/3)
         }
         const count_total = await Product.count({
-            where:[{ 
-                price: {      
-                        [Op.gte] : respons.price.price_min,
-                        [Op.lte] : respons.price.price_max
-                }
-            }],
+            where: whereFilters(
+                Op,
+                validationFiltersPrice,
+                validationName,
+                filter_preciomin,
+                filter_precioMax,
+                name
+            ),
             include:[
                 {
                     model: Category,
@@ -170,7 +172,7 @@ const getProducts = async (req, res)=>{
         respons.categories = Array.from(
             new Set(products.map((products)=>products.category.name))
         )
-        respons.pages = Math.ceil(count_total/10);
+        respons.pages = Math.ceil(count_total/9);
         res.send( respons );
     } catch (error) {
         console.error(error);
