@@ -25,12 +25,18 @@ const querySplit = (order)=>{
 
 const validationQueryName = (name)=>{
     let validation = false;
-    if(name=="" && name.length < 70){
+    if(name && name.length < 70){
         validation = true
     }
     return validation;
 }
-
+const validationQueryCategory = (category)=>{
+    let validation = false;
+    if(category && category.length < 30){
+        validation = true;
+    }
+    return validation;
+}
 const validationQueryPage = (page)=>{
     let validation = false;
     if(page && Number.isInteger(page)){
@@ -77,12 +83,20 @@ const whereFilters = (Op,validationFiltersPrice, validationName, filter_preciomi
         }
     }
 }
+const whereCategoryFilters = (category)=>{
+    const validation = validationQueryCategory(category);
+    return(
+        validation? [{name: category}] : []
+    )
+}
 module.exports = {
     validationQuerysFiltersPrice,
     validationQueryOrders,
     querySplit,
     validationQueryName,
+    validationQueryCategory,
     validationQueryPage,
     whereFilters,
+    whereCategoryFilters,
     calcRange
 }

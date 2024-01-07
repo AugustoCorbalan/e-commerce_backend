@@ -1,4 +1,4 @@
-const {validationQuerysFiltersPrice, validationQueryName,validationQueryPage, validationQueryOrders, querySplit, whereFilters, calcRange} = require('./functions/functionsGetProducts.js');
+const {validationQuerysFiltersPrice, validationQueryName, validationQueryCategory, validationQueryPage, validationQueryOrders, querySplit, whereFilters, whereCategoryFilters} = require('./functions/functionsGetProducts.js');
 const Product = require('../../db/models/product.js');
 const Category = require('../../db/models/category.js');
 const { Op } = require('sequelize');
@@ -8,6 +8,7 @@ const getProducts = async (req, res)=>{
     let { order } = req.query;
     let name = req.query.name? req.query.name : "";
     let page = req.query.page? req.query.page : 1;
+    let category = req.query.category? req.query.category : "";
     filter_preciomin= parseInt(filter_preciomin, 10);
     filter_precioMax= parseInt(filter_precioMax, 10);
     //Validar querys (Que sea alguno de los parametros esperados, si no retorno un error).
@@ -27,6 +28,8 @@ const getProducts = async (req, res)=>{
     }
     //Estructura del objeto de la respuesta.
     let respons = {
+        pages: 0, // Cantidad de páginas mostrando 10 productos en cada página.
+        categories: [], //Categorías disponibles dentro de los parámetros de búsqueda.
         price:{ 
             price_min: 0, // Precio mínimo entre todos los productos que cumplen con los filtros (excepto el de precios).
             price_max: 0,  // Precio máximo entre todos los productos que cumplen con los filtros (excepto el de precios).
@@ -41,7 +44,6 @@ const getProducts = async (req, res)=>{
             medMajor: 0, // Cantidad de productos con precio menor a price_2tercio
         },
         products: [], //Lista de productos
-        pages: 0, // Cantidad de páginas mostrando 10 productos en cada página.
     }
     
     try {
@@ -59,11 +61,40 @@ const getProducts = async (req, res)=>{
             ] : [['productId', 'ASC']],
             limit: sizePage,
             offset: offset,
-            include: Category
+            include: [
+                {
+                    model: Category,
+                    where: whereCategoryFilters(
+                        category
+                    )
+                }
+            ]
         });
         respons.products = products;
-        const price_min = await Product.min('price');
-        const price_max = await Product.max('price');
+        const productsOrdered = await Product.findAll({
+            where: whereFilters(
+                Op,
+                false,
+                validationName,
+                0,
+                0,
+                name
+            ),
+            order:[['price', 'ASC']],
+            include: [
+                {
+                    model: Category,
+                    where: whereCategoryFilters(
+                        category
+                    )
+                }
+            ],
+            attributes:["price"],
+            raw: true
+        })
+        console.log("productsOrdered", productsOrdered)
+        const price_min = productsOrdered[0].price? Number.parseFloat(productsOrdered[0].price) : 0;
+        const price_max = productsOrdered[0].price? Number.parseFloat(productsOrdered[productsOrdered.length - 1].price) : 0;
         respons.price = {
             price_min,
             price_max,
@@ -72,25 +103,63 @@ const getProducts = async (req, res)=>{
             price_2thirds: Math.floor(price_min + 2*(price_max - price_min)/3)
         }
         const count_total = await Product.count({
-            where: [{price: {      
-                [Op.gte] : respons.price.price_min,
-                [Op.lte] : respons.price.price_max
-            }}]});
+            where:[{ 
+                price: {      
+                        [Op.gte] : respons.price.price_min,
+                        [Op.lte] : respons.price.price_max
+                }
+            }],
+            include:[
+                {
+                    model: Category,
+                    where: whereCategoryFilters(
+                        category
+                    )
+                }
+            ]
+        });
         const count_medMinor = await Product.count({
             where: [{price: {      
                 [Op.gte] : respons.price.price_min,
                 [Op.lte] : respons.price.price_med
-            }}]});
+            }}],
+            include:[
+                {
+                    model: Category,
+                    where: whereCategoryFilters(
+                        category
+                    )
+                }
+            ]
+        });
         const count_thirdsBetween = await Product.count({
             where: [{price: {      
                 [Op.gte] : respons.price.price_thirds,
                 [Op.lte] : respons.price.price_2thirds
-            }}]});
+            }}],
+            include:[
+                {
+                    model: Category,
+                    where: whereCategoryFilters(
+                        category
+                    )
+                }
+            ]
+        });
         const count_medMajor = await Product.count({
             where: [{price: {      
                 [Op.gte] : respons.price.price_thirds,
                 [Op.lte] : respons.price.price_max
-            }}]});
+            }}],
+            include:[
+                {
+                    model: Category,
+                    where: whereCategoryFilters(
+                        category
+                    )
+                }
+            ]
+        });
 
         respons.cants= {
             total: count_total,
@@ -98,6 +167,9 @@ const getProducts = async (req, res)=>{
             thirdsBetween: count_thirdsBetween,
             medMajor: count_medMajor,
         }
+        respons.categories = Array.from(
+            new Set(products.map((products)=>products.category.name))
+        )
         respons.pages = Math.ceil(count_total/10);
         res.send( respons );
     } catch (error) {
