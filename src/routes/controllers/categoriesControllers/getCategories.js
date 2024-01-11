@@ -1,4 +1,4 @@
-const Category = require('../../db/models/category.js')
+const Category = require('../../../db/models/category.js')
 const getCategories = async (req, res)=>{
     try {
         const response = await Category.findAll({attributes:['name']}); //Traigo todos los nombres de las categorías creadas.

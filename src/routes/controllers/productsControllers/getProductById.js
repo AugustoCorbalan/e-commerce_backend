@@ -1,5 +1,5 @@
-const Category = require('../../db/models/category.js');
-const Product = require('../../db/models/product.js');
+const Category = require('../../../db/models/category.js');
+const Product = require('../../../db/models/product.js');
 const getProductById = async (req, res)=>{
     try {
         const {productId} = req.params;

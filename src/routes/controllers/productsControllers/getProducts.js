@@ -1,6 +1,6 @@
 const {validationQuerysFiltersPrice, validationQueryName, validationQueryCategory, validationQueryPage, validationQueryOrders, querySplit, whereFilters, whereCategoryFilters} = require('./functions/functionsGetProducts.js');
-const Product = require('../../db/models/product.js');
-const Category = require('../../db/models/category.js');
+const Product = require('../../../db/models/product.js');
+const Category = require('../../../db/models/category.js');
 const { Op } = require('sequelize');
 const getProducts = async (req, res)=>{
     let { filter_preciomin } = req.query;

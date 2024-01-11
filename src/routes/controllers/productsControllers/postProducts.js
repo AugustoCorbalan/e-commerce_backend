@@ -1,7 +1,7 @@
-const Product = require('../../db/models/product.js');
-const Category = require('../../db/models/category.js');
+const Product = require('../../../db/models/product.js');
+const Category = require('../../../db/models/category.js');
 const fs = require('fs-extra');
-const { uploadImage } = require('../../utils/cloudinary.js');
+const { uploadImage } = require('../../../utils/cloudinary.js');
 
 const postProduct = async (req, res)=>{
     try {
