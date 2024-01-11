@@ -5,6 +5,7 @@ const mercadoPagoRouth = require('./mercadoPagoRouth.js');
 const userRouth = require('./usersRouth.js');
 const cartRouth = require('./cartRouth.js');
 const authRouth = require('./authRouth.js');
+const checkRouth = require('./checkRouth.js');
 const router = Router();
 
 router.use('/user', userRouth);
@@ -13,5 +14,6 @@ router.use('/products', productsRouth);
 router.use('/categories', categoriesRouth);
 router.use('/mercadopago', mercadoPagoRouth);
 router.use('/auth', authRouth);
+router.use('/check', checkRouth);
 
 module.exports = router;
